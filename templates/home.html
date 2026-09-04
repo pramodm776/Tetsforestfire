@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Forest Fire Prediction</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 30px 15px;
+
+            background: linear-gradient(
+                135deg,
+                #1d976c,
+                #93f9b9
+            );
+        }
+
+
+        /* Main Card */
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+
+            padding: 40px;
+
+            background: rgba(255, 255, 255, 0.97);
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.2);
+
+            animation: fadeIn 0.8s ease;
+        }
+
+
+        /* Heading */
+
+        .header {
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+        .header .icon {
+            font-size: 50px;
+
+            margin-bottom: 10px;
+
+            animation: fire 1.5s infinite alternate;
+        }
+
+        .header h1 {
+            font-size: 32px;
+
+            color: #222;
+
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #777;
+
+            font-size: 15px;
+        }
+
+
+        /* Form */
+
+        form {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 18px;
+        }
+
+
+        /* Input Group */
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            color: #444;
+        }
+
+
+        /* Input */
+
+        input {
+            width: 100%;
+
+            padding: 13px 15px;
+
+            border: 2px solid #e1e1e1;
+
+            border-radius: 10px;
+
+            outline: none;
+
+            font-size: 15px;
+
+            transition: all 0.3s ease;
+
+            background: #fafafa;
+        }
+
+        input:hover {
+            border-color: #1d976c;
+
+            background: white;
+        }
+
+        input:focus {
+            border-color: #1d976c;
+
+            background: white;
+
+            box-shadow:
+                0 0 0 4px rgba(29, 151, 108, 0.12);
+
+            transform: translateY(-2px);
+        }
+
+
+        /* Predict Button */
+
+        button {
+            grid-column: span 2;
+
+            margin-top: 10px;
+
+            padding: 15px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: linear-gradient(
+                135deg,
+                #1d976c,
+                #148f77
+            );
+
+            color: white;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 10px 25px rgba(29, 151, 108, 0.35);
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+
+        /* Result */
+
+        .result {
+            margin-top: 30px;
+
+            padding: 20px;
+
+            text-align: center;
+
+            border-radius: 12px;
+
+            background: #e8fff5;
+
+            border: 2px solid #1d976c;
+
+            animation: resultAnimation 0.6s ease;
+        }
+
+        .result h2 {
+            color: #148f77;
+
+            font-size: 18px;
+
+            margin-bottom: 8px;
+        }
+
+        .result p {
+            font-size: 25px;
+
+            font-weight: bold;
+
+            color: #222;
+        }
+
+
+        /* Animations */
+
+        @keyframes fadeIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        @keyframes fire {
+
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.15);
+            }
+
+        }
+
+
+        @keyframes resultAnimation {
+
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+        }
+
+
+        /* Mobile Responsive */
+
+        @media (max-width: 600px) {
+
+            .container {
+                padding: 25px 20px;
+            }
+
+            .header h1 {
+                font-size: 26px;
+            }
+
+            form {
+                grid-template-columns: 1fr;
+            }
+
+            button {
+                grid-column: span 1;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- Header -->
+
+    <div class="header">
+
+        <div class="icon">
+            🔥
+        </div>
+
+        <h1>Forest Fire Prediction</h1>
+
+        <p>
+            Enter the environmental parameters
+            to predict forest fire conditions
+        </p>
+
+    </div>
+
+
+    <!-- Prediction Form -->
+
+    <form
+        action="{{ url_for('predict_datapoint') }}"
+        method="post"
+    >
+
+
+        <div class="input-group">
+
+            <label>Temperature</label>
+
+            <input
+                type="text"
+                name="Temperature"
+                placeholder="Enter Temperature"
+                required
+            >
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>Relative Humidity (RH)</label>
+
+            <input
+                type="text"
+                name="RH"
+                placeholder="Enter RH"
+                required
+            >
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>Wind Speed (Ws)</label>
+
+            <input
+                type="text"
+                name="Ws"
+                placeholder="Enter Wind Speed"
+                required
+            >
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>Rain</label>
+
+            <input
+                type="text"
+                name="Rain"
+                placeholder="Enter Rain"
+                required
+            >
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>FFMC</label>
+
+            <input
+                type="text"
+                name="FFMC"
+                placeholder="Enter FFMC"
+                required
+            >
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>DMC</label>
+
+            <input
+                type="text"
+                name="DMC"
+                placeholder="Enter DMC"
+                required
+            >
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>ISI</label>
+
+            <input
+                type="text"
+                name="ISI"
+                placeholder="Enter ISI"
+                required
+            >
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>Classes</label>
+
+            <input
+                type="text"
+                name="Classes"
+                placeholder="Enter Classes"
+                required
+            >
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>Region</label>
+
+            <input
+                type="text"
+                name="Region"
+                placeholder="Enter Region"
+                required
+            >
+
+        </div>
+
+
+        <!-- Button -->
+
+        <button type="submit">
+
+            🔮 Predict Forest Fire
+
+        </button>
+
+
+    </form>
+
+
+    <!-- Prediction Result -->
+
+    {% if result %}
+
+        <div class="result">
+
+            <h2>The FWI is</h2>
+
+            <p>{{ result }}</p>
+
+        </div>
+
+    {% endif %}
+
+
+</div>
+
+
+</body>
+
+</html>
